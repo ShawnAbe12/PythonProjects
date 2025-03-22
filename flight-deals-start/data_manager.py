@@ -1,13 +1,17 @@
 import requests
 from pprint import pprint
+import os
+from dotenv import find_dotenv, load_dotenv
 
 
 
 class DataManager:
 
     def __init__(self):
-        self.SHEETY_ENDPOINT = "https://api.sheety.co/7db547e6e47cf4eb2c77f55e67b89a9d/flightDeals/prices"
-        self.sheet_headers = {"Authorization": "Bearer aSODjpadajlkxzcm"}
+        dotenv_file = find_dotenv()
+        load_dotenv(dotenv_file)
+        self.SHEETY_ENDPOINT = os.getenv("SHEETY_ENDPOINT")
+        # self.sheet_headers = os.getenv("sheet_headers")
         self.city = ""
         self.iata_Code = ""
         self.lowest_price = ""
@@ -22,11 +26,12 @@ class DataManager:
                 "lowestPrice": self.lowest_price
             }
         }
-        sheety = requests.post(url=self.SHEETY_ENDPOINT, json=self.post_parameters, headers=self.sheet_headers)
+        #, headers=self.sheet_headers
+        sheety = requests.post(url=self.SHEETY_ENDPOINT, json=self.post_parameters)
         print(sheety.text)
     def get(self):
         sheety = requests.get(url=self.SHEETY_ENDPOINT)
-        data = sheety.json()["prices"]
+        data = sheety.json()["sheet1"]
         return data
     def put(self,data,objectID):
         endpoint = self.SHEETY_ENDPOINT + "/" + str(objectID)
