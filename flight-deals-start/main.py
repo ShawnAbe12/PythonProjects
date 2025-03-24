@@ -20,18 +20,16 @@ for sheet in sheety_data:
     if sheet["iataCode"] == "":
         response = flightSearch.findIataCode(sheet["city"])
         sheet["iataCode"] = response
-        push = {"sheet1": sheet}
+        push = {"prices": sheet}
         data.put(push,counter)
 
 
     least_cost = flightData.findFlight(destinationcity=sheet["iataCode"],num_adults= 1, max_price=1000)
-    # pprint(least_cost)
-
 
     if float(sheet["cost"]) > float(least_cost):
         notification.send_message(sheet["city"], least_cost)
         sheet["cost"] = least_cost
-        push = {"sheet1": sheet}
+        push = {"price": sheet}
         data.put(push, counter)
 
 
