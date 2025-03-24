@@ -21,10 +21,12 @@ class FlightData:
 
 
     def __init__(self):
+        self.stops = 0
         pass
-    def findFlight(self, destinationcity, num_adults, max_price ):
+    def findFlight(self, originCityCode, destinationcity, fromTime, toTime, num_adults, max_price, isDirect = True):
         flightSearch = FlightSearch()
         ACCESS_TOKEN = flightSearch.get_new_Token()
+
 
         headers = {
             'Authorization': f'Bearer {ACCESS_TOKEN}',
@@ -40,7 +42,8 @@ class FlightData:
             "destinationLocationCode": destinationcity,
             "departureDate": "2025-05-21",
             "adults": num_adults,
-            "maxPrice": max_price
+            "maxPrice": max_price,
+            # "nonStop" : isDirect
         }
         try:
             connection = requests.get(url=FLIGHT_DESTINATION_URL, headers=headers, data=body, params=parameters)

@@ -24,7 +24,7 @@ for sheet in sheety_data:
         data.put(push,counter)
 
 
-    least_cost = flightData.findFlight(destinationcity=sheet["iataCode"],num_adults= 1, max_price=1000)
+    least_cost = flightData.findFlight(originCityCode="DFW",destinationcity=sheet["iataCode"],fromTime="2025-05-22",toTime="2025-05-29",num_adults= 1, max_price=1000)
 
     if float(sheet["cost"]) > float(least_cost):
         notification.send_message(sheet["city"], least_cost)
