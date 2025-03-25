@@ -32,11 +32,12 @@ class DataManager:
     def get(self):
         sheety = requests.get(url=self.SHEETY_ENDPOINT)
         data = sheety.json()["prices"]
+        pprint(data)
         return data
     def put(self,data,objectID):
         endpoint = self.SHEETY_ENDPOINT + "/" + str(objectID)
         response = requests.put(url=endpoint, json=data)
-        # print(response.status_code)
-        # print(response.text)
+        print(response.status_code)
+        print(response.text)
     #This class is responsible for talking to the Google Sheet.
     pass

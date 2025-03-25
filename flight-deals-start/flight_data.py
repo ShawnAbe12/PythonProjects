@@ -43,13 +43,14 @@ class FlightData:
             "departureDate": "2025-05-21",
             "adults": num_adults,
             "maxPrice": max_price,
-            # "nonStop" : isDirect
+            # "nonStop" : False
         }
         try:
             connection = requests.get(url=FLIGHT_DESTINATION_URL, headers=headers, data=body, params=parameters)
 
             least_counter_ID = 0
             least_price = connection.json()["data"][0]["price"]["base"]
+            
 
 
             try:
@@ -57,8 +58,10 @@ class FlightData:
                 while True:
                     # print(f"Current Least Price: {least_price}")
                     # pprint(connection.json()['data'][counter]['price']['base'])
-                    if least_price > connection.json()['data'][counter]['price']['base']:
+                    if float(least_price) > float(connection.json()['data'][counter]['price']['base']):
+                        # print(f"Before: {least_price} and {connection.json()['data'][counter]['price']['base']} and {float(least_price) > float(connection.json()['data'][counter]['price']['base'])}")
                         least_price = connection.json()['data'][counter]['price']['base']
+                        # print(f"After: {least_price}")
                         least_counter_ID = counter
                     counter +=1
             except:
