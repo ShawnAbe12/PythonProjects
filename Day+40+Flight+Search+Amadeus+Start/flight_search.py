@@ -53,8 +53,8 @@ class FlightSearch:
         response = requests.post(url=TOKEN_ENDPOINT, headers=header, data=body)
 
         # New bearer token. Typically expires in 1799 seconds (30min)
-        print(f"Your token is {response.json()['access_token']}")
-        print(f"Your token expires in {response.json()['expires_in']} seconds")
+        # print(f"Your token is {response.json()['access_token']}")
+        # print(f"Your token expires in {response.json()['expires_in']} seconds")
         return response.json()['access_token']
 
     def get_destination_code(self, city_name):
@@ -80,7 +80,7 @@ class FlightSearch:
         and returns "Not Found".
         """
 
-        print(f"Using this token to get destination {self._token}")
+        # print(f"Using this token to get destination {self._token}")
         headers = {"Authorization": f"Bearer {self._token}"}
         query = {
             "keyword": city_name,
@@ -104,21 +104,19 @@ class FlightSearch:
 
         return code
 
-    def check_flights(self, origin_city_code, destination_city_code, from_time, to_time):
+    def check_flights(self, origin_city_code, destination_city_code, from_time, to_time, is_direct=True):
         """
         Searches for flight options between two cities on specified departure and return dates
         using the Amadeus API.
-
         Parameters:
+            is_direct (bool): True for non-stop flights.
             origin_city_code (str): The IATA code of the departure city.
             destination_city_code (str): The IATA code of the destination city.
             from_time (datetime): The departure date.
             to_time (datetime): The return date.
-
         Returns:
             dict or None: A dictionary containing flight offer data if the query is successful; None
             if there is an error.
-
         The function constructs a query with the flight search parameters and sends a GET request to
         the API. It handles the response, checking the status code and parsing the JSON data if the
         request is successful. If the response status code is not 200, it logs an error message and
@@ -127,13 +125,15 @@ class FlightSearch:
 
         # print(f"Using this token to check_flights() {self._token}")
         headers = {"Authorization": f"Bearer {self._token}"}
+
+        # nonStop must be "true" or "false" string. Python booleans won't work
         query = {
             "originLocationCode": origin_city_code,
             "destinationLocationCode": destination_city_code,
             "departureDate": from_time.strftime("%Y-%m-%d"),
             "returnDate": to_time.strftime("%Y-%m-%d"),
             "adults": 1,
-            "nonStop": "true",
+            "nonStop": "true" if is_direct else "false",
             "currencyCode": "GBP",
             "max": "10",
         }
