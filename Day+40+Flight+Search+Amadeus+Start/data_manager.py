@@ -1,42 +1,43 @@
-import os
 import requests
-from requests.auth import HTTPBasicAuth
-from dotenv import load_dotenv
+from pprint import pprint
+import os
+from dotenv import find_dotenv, load_dotenv
 
-# Load environment variables from .env file
-load_dotenv()
-
-SHEETY_PRICES_ENDPOINT = YOUR ENDPOINT HERE
 
 
 class DataManager:
 
     def __init__(self):
-        self._user = os.environ["SHEETY_USRERNAME"]
-        self._password = os.environ["SHEETY_PASSWORD"]
-        self._authorization = HTTPBasicAuth(self._user, self._password)
-        self.destination_data = {}
-
-    def get_destination_data(self):
-        # Use the Sheety API to GET all the data in that sheet and print it out.
-        response = requests.get(url=SHEETY_PRICES_ENDPOINT)
-        data = response.json()
-        self.destination_data = data["prices"]
-        # Try importing pretty print and printing the data out again using pprint() to see it formatted.
-        # pprint(data)
-        return self.destination_data
-
-    # In the DataManager Class make a PUT request and use the row id from sheet_data
-    # to update the Google Sheet with the IATA codes. (Do this using code).
-    def update_destination_codes(self):
-        for city in self.destination_data:
-            new_data = {
-                "price": {
-                    "iataCode": city["iataCode"]
-                }
+        dotenv_file = find_dotenv()
+        load_dotenv(dotenv_file)
+        self.SHEETY_ENDPOINT = os.getenv("SHEETY_ENDPOINT")
+        # self.sheet_headers = os.getenv("sheet_headers")
+        self.city = ""
+        self.iata_Code = ""
+        self.lowest_price = ""
+    def post(self,city,iata_code,lowest_price):
+        self.city = city
+        self.iata_Code = iata_code
+        self.lowest_price = lowest_price
+        self.post_parameters = {
+            "price": {
+                "city": self.city,
+                "iataCode": self.iata_Code,
+                "lowestPrice": self.lowest_price
             }
-            response = requests.put(
-                url=f"{SHEETY_PRICES_ENDPOINT}/{city['id']}",
-                json=new_data
-            )
-            print(response.text)
+        }
+        #, headers=self.sheet_headers
+        sheety = requests.post(url=self.SHEETY_ENDPOINT, json=self.post_parameters)
+        print(sheety.text)
+    def get(self):
+        sheety = requests.get(url=self.SHEETY_ENDPOINT)
+        data = sheety.json()["prices"]
+        pprint(data)
+        return data
+    def put(self,data,objectID):
+        endpoint = self.SHEETY_ENDPOINT + "/" + str(objectID)
+        response = requests.put(url=endpoint, json=data)
+        print(response.status_code)
+        print(response.text)
+    #This class is responsible for talking to the Google Sheet.
+    pass

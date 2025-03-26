@@ -92,7 +92,7 @@ class FlightSearch:
             headers=headers,
             params=query
         )
-        print(f"Status code {response.status_code}. Airport IATA: {response.text}")
+        # print(f"Status code {response.status_code}. Airport IATA: {response.text}")
         try:
             code = response.json()["data"][0]['iataCode']
         except IndexError:
