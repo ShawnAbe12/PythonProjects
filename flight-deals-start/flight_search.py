@@ -64,6 +64,7 @@ class FlightSearch:
         # pprint(response.json())
         return response.json()['access_token']
 
+
     def findFlight(self, originCityCode, destinationcity, fromTime, toTime, num_adults, max_price, isDirect=True):
         ACCESS_TOKEN = self.get_new_Token()
         headers = {
@@ -76,11 +77,13 @@ class FlightSearch:
             "client_secret": API_SECRET
         }
         parameters = {
-            "originLocationCode": DALLAS_IATA_CODE,
+            "originLocationCode": originCityCode,
             "destinationLocationCode": destinationcity,
             "departureDate": "2025-05-21",
+            "nonStop": "true" if is_direct else "false",
             "adults": num_adults,
             "maxPrice": max_price,
+            "max":"10",
             # "nonStop" : False
         }
         try:
