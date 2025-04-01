@@ -11,6 +11,7 @@ class DataManager:
         dotenv_file = find_dotenv()
         load_dotenv(dotenv_file)
         self.PRICES_ENDPOINT = os.getenv("PRICES_ENDPOINT")
+        self.USER_ENDPOINT = os.getenv("USER_ENDPOINT")
         # self.sheet_headers = os.getenv("sheet_headers")
         self.city = ""
         self.iata_Code = ""
@@ -31,9 +32,12 @@ class DataManager:
         print(sheety.text)
     def get(self):
         sheety = requests.get(url=self.PRICES_ENDPOINT)
-        data = sheety.json()["prices"]
-        pprint(data)
-        return data
+        try:
+            data = sheety.json()['prices']
+            return data
+        except:
+            pprint(sheety.json())
+        return 0
     def put(self,data,objectID):
         endpoint = self.PRICES_ENDPOINT + "/" + str(objectID)
         response = requests.put(url=endpoint, json=data)
@@ -43,9 +47,13 @@ class DataManager:
     pass
 
     def get_customer_emails(self):
-        sheety = requests.get(url=os.getenv("USER_ENDPOINT"))
-        users = sheety.json()['users']
+        sheety = requests.get(url=self.USER_ENDPOINT)
+        try:
+            users = sheety.json()['users']
+            return users
+        except:
+            print(sheety.json())
         # pprint(users)
-        return users
+        return 0
 
 

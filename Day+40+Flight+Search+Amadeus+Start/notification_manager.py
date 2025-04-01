@@ -1,9 +1,14 @@
 from twilio.rest import Client
 import os
+from data_manager import DataManager
 from dotenv import find_dotenv, load_dotenv
+import smtplib
+
 
 class NotificationManager:
     def __init__(self):
+        self.gmail = os.getenv("gmail")
+        self.gmail_app_pass = os.getenv("gmail_app_pass")
         pass
     def send_message(self,city,price):
         dotenv_file = find_dotenv()
@@ -23,3 +28,15 @@ class NotificationManager:
         )
         print(message.status)
     #This class is responsible for sending notifications with the deal flight details.
+    def send_email(self,city,price,stops):
+        data_manager = DataManager()
+        customer_emails = data_manager.get_customer_emails()
+        for user in customer_emails:
+            dest_email = user["email"]
+            message = f"Hello {user['firstName']}, \nThere is currently a low price for the destination {city} at ${price} and its has {stops} stop(s).\nCheck it out!"
+            with smtplib.SMTP("smtp.gmail.com", port=587) as gmail_connection:
+                gmail_connection.starttls()
+                gmail_connection.login(user=self.gmail, password=self.gmail_app_pass)
+                gmail_connection.sendmail(from_addr=self.gmail, to_addrs=dest_email, msg=f"Subject:Flight Deals"
+                                                                                    f"\n\n{message}")
+
