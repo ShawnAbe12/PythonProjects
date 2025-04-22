@@ -6,7 +6,7 @@ import os
 
 file = find_dotenv()
 load_dotenv(file)
-url = "https://appbrewery.github.io/instant_pot/"
+url = "https://www.amazon.com/dp/B075CYMYK6?ref_=cm_sw_r_cp_ud_ct_FM9M699VKHTT47YD50Q6&th=1"
 header = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:131.0) Gecko/20100101 Firefox/131.0",
           "Accept-Language":"en-US"}
 requests = requests.get(url,headers=header)
